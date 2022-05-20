@@ -22,12 +22,10 @@ class Usuario {
         this.libros.push(libro)
     }
 
-    getBookNames() {
-    const bookNames = this.libros.map(({nombre})=>{ 
-        return (`${nombre}`)
-    })
-    console.log(bookNames)
-    }
+    getBookNames(){
+        let bookNames = this.libros.map(libro => libro.nombre);
+        console.log(bookNames);
+    } 
 }
 
 
