@@ -1,41 +1,62 @@
-class Usuario {
-    constructor() {
-        this.nombre = 
-        this.apellido = 
-        this.libros = []
-        this.mascotas = []
+const fs = require('fs')
+
+class Contenedor {
+    constructor(fileName) {
+        this.fileName = fileName
     }
 
-    getFullName() {
-        console.log(`Nombre: ${this.nombre} ${this.apellido}`)
+    async save(objeto) {
+        let data = await fs.promises.readFile(`./${this.fileName}`, 'utf-8')
+
+        if(!data) {
+            objeto.id = 1
+            const arr = [objeto]
+            await fs.promises.writeFile(`./${this.fileName}`, JSON.stringify(arr))
+            return objeto.id
+        } else {
+            data = JSON.parse(data);
+            objeto.id = data.length+1
+            data.push(objeto)
+            await fs.promises.writeFile(`./${this.fileName}`, JSON.stringify(data))
+            return objeto.id
+        }
     }
 
-    addMascota(mascota) {
-        this.mascotas.push(mascota)
+    async getAll() {
+        const data = JSON.parse(await fs.promises.readFile(`./${this.fileName}`,  'utf-8'))
+
+        return data
     }
 
-    countMascotas() {
-        console.log(`Mascotas: ${this.mascotas.length}`)
+    async getRandom() {
+        const data = JSON.parse(await fs.promises.readFile(`./${this.fileName}`,  'utf-8'))
+        let random = Math.floor((Math.random() * data.length ) + 0);
+        return data[random]
     }
-
-    addBook(libro) {
-        this.libros.push(libro)
-    }
-
-    getBookNames(){
-        let bookNames = this.libros.map(libro => libro.nombre);
-        console.log(bookNames);
-    } 
+    
 }
 
+const productos = new Contenedor('productos.txt')
 
-const usuario = new Usuario()
-usuario.nombre = "Rodrigo"
-usuario.apellido = "Ballesteros"
-usuario.getFullName()
-usuario.addMascota("Milo")
-usuario.addMascota("Nina")
-usuario.countMascotas()
-usuario.addBook({nombre: "Moby Dick", autor: "Herman Melville"})
-usuario.addBook({nombre: "Don Quijote de la Mancha", autor: "Miguel de Cervantes"})
-usuario.getBookNames()
+const express = require('express')
+const app = express ()
+const puerto = 8080
+
+app.get('/productos', productsController)
+app.get('/productoRandom', productsRandomController)
+
+app.listen(puerto, () => {
+    console.log(`Servidor escuchando puerto: ${puerto}`)
+})
+
+async function productsController(req, res) {
+    const response = await productos.getAll()
+
+    res.send(response)
+}
+
+async function productsRandomController(req, res) {
+    const response = await productos.getRandom()
+
+    res.send(response)
+}
