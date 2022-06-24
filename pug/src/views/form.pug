@@ -1,0 +1,20 @@
+.container
+    .d-grid.gap-3
+        .p-4.text-center
+            h1.text-center Ingrese Producto
+
+body
+  form(action='/productos', method='POST')
+    p
+      | Nombre: 
+      input(type='text', name='title', required)
+      |          Precio: 
+      input(type='number', name='price', required)
+      |          Foto URL: 
+      input(type='text', name='thumbnail', required)
+    input(type='submit', value='Enviar')
+
+.container
+    .d-grid.gap-3
+        .p-4.text-center
+            button.btn.btn-sm.btn-outline-secondary(onclick="location.href='http://localhost:8080/productos'")="Ver Inventario"

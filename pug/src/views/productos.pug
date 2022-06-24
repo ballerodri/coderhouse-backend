@@ -1,0 +1,23 @@
+.container
+    .d-grid.gap-3
+        .p-4.text-center
+            h1.text-center Vista de Productos
+
+body
+    table.table.table-striped
+      tr
+        th Nombre
+        th Precio
+        th Foto
+
+      each n in products
+        tr
+          td= n.title
+          td= n.price
+          td(scope="row")
+            img(src=n.thumbnail, style='width:48px')
+
+.container
+    .d-grid.gap-3
+        .p-4.text-center
+            button.btn.btn-sm.btn-outline-secondary(onclick="location.href='http://localhost:8080/'")="Volver"
